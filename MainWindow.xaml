@@ -1,0 +1,28 @@
+﻿<Window x:Class="CG_Test.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:CG_Test"
+        mc:Ignorable="d"
+        Title="Image Filtering App" Height="600" Width="800">
+    <StackPanel>
+        <Menu Height="Auto">
+            <MenuItem Header="File">
+                <MenuItem x:Name="LoadImage" Header="Load Image" Click="LoadImage_Click"/>
+                <MenuItem x:Name="Save" Header="Save" Click="Save_Click"/>
+                <MenuItem x:Name="Reset" Header="Reset" Click="Reset_Click"/>
+            </MenuItem>
+            <MenuItem x:Name="Functional_Filters" Header="Functional Filters"/>
+            <MenuItem x:Name="Convolution_Filters" Header="Convolution Filters"/>
+        </Menu>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+            <Image Grid.Column="0" x:Name="OriginalImage" Stretch="Uniform"/>
+            <Image Grid.Column="1" x:Name="FilteredImage" Stretch="Uniform"/>
+        </Grid>
+    </StackPanel>
+</Window>
