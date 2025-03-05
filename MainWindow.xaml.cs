@@ -30,7 +30,8 @@ public partial class MainWindow : Window
         Gaussian_Blur,
         Sharpen,
         Edge_Detection,
-        Emboss
+        Emboss,
+        Custom_Filter
     }
     public MainWindow()
     {
@@ -130,7 +131,7 @@ public partial class MainWindow : Window
             MessageBox.Show($"Error applying filter: {ex.Message}");
         }
     }
-    private void ApplyConvolutionFilter(ConvolutionFilterType filterType)
+    private void ApplyConvolutionFilter(ConvolutionFilterType filterType, ConvolutionFilter? custom = null)
     {
         try
         {
@@ -152,6 +153,13 @@ public partial class MainWindow : Window
                         break;
                     case ConvolutionFilterType.Emboss:
                         filteredImage = ConvolutionFilters.Emboss(filteredImage);
+                        break;
+                    case ConvolutionFilterType.Custom_Filter:
+                        if(custom == null)
+                        {
+                            throw new ArgumentNullException("Please provide a custom filter");
+                        }
+                        filteredImage = ConvolutionFilters.Convolve(filteredImage, custom);
                         break;
                     default:
                         break;
@@ -227,6 +235,15 @@ public partial class MainWindow : Window
             {
                 MessageBox.Show($"Error saving image: {ex.Message}");
             }
+        }
+    }
+
+    private void EditCustomFilter_Click(object sender, RoutedEventArgs e)
+    {
+        var editorWindow = new ConvolutionFilterEditor();
+        if (editorWindow.ShowDialog() == true)
+        {
+            MessageBox.Show("Custom filter edited.");
         }
     }
 }

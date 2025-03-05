@@ -14,7 +14,11 @@
                 <MenuItem x:Name="Reset" Header="Reset" Click="Reset_Click"/>
             </MenuItem>
             <MenuItem x:Name="Functional_Filters" Header="Functional Filters"/>
-            <MenuItem x:Name="Convolution_Filters" Header="Convolution Filters"/>
+            <MenuItem x:Name="Convolution_Filters" Header="Convolution Filters">
+                <MenuItem x:Name="Custom_Filter" Header="Custom Filter">
+                    <MenuItem x:Name="EditCustomFilter" Header="Edit Custom Filter" Click="EditCustomFilter_Click"/>
+                </MenuItem>
+            </MenuItem>
         </Menu>
         <Grid>
             <Grid.ColumnDefinitions>
