@@ -15,6 +15,7 @@ namespace CG_Test;
 public partial class MainWindow : Window
 {
     private BitmapSource? filteredImage;
+    private ConvolutionFilter? customConvolutionFilter;
 
     private enum FunctionalFilterType
     {
@@ -36,6 +37,10 @@ public partial class MainWindow : Window
     public MainWindow()
     {
         InitializeComponent();
+        customConvolutionFilter = new ConvolutionFilter()
+        {
+            Kernel = new double[,] { { 0, 0, 0 }, { 0, 1, 0 }, { 0, 0, 0 } }
+        };
         PopulateFilterMenu();
     }
 
@@ -73,7 +78,7 @@ public partial class MainWindow : Window
             if (filter.Tag is FunctionalFilterType functionalFilterType)
                 ApplyFunctionalFilter(functionalFilterType);
             else if (filter.Tag is ConvolutionFilterType convolutionFilterType)
-                ApplyConvolutionFilter(convolutionFilterType);
+                ApplyConvolutionFilter(convolutionFilterType, customConvolutionFilter);
         }
     }
 
@@ -240,10 +245,11 @@ public partial class MainWindow : Window
 
     private void EditCustomFilter_Click(object sender, RoutedEventArgs e)
     {
-        var editorWindow = new ConvolutionFilterEditor();
+        var editorWindow = new ConvolutionFilterEditor(customConvolutionFilter!);
         if (editorWindow.ShowDialog() == true)
         {
-            MessageBox.Show("Custom filter edited.");
+            customConvolutionFilter = editorWindow.EditedFilter;
+            MessageBox.Show($"Custom filter edited.\n{customConvolutionFilter}");
         }
     }
 }

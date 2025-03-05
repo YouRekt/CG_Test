@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Security.RightsManagement;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -12,45 +12,75 @@ using System.Windows.Media.Imaging;
 
 namespace CG_Test.Filters
 {
-    public class ConvolutionFilter : INotifyPropertyChanged
+    public class ConvolutionFilter
     {
-        public double[,] Kernel
-        {
-            get => _kernel;
-            set
-            {
-                _kernel = value;
-                NotifyPropertyChanged(nameof(KernelWidth));
-                NotifyPropertyChanged(nameof(KernelHeight));
-            }
-        }
-        private double[,] _kernel = new double[,] { { 0, 0, 0 }, { 0, 1, 0 }, { 0, 0, 0 } };
+        public double[,] Kernel { get; set; } = new double[,] { { 0, 0, 0 }, { 0, 1, 0 }, { 0, 0, 0 } };
         public int KernelWidth
         {
-            get => Kernel.GetLength(1); set
+            get => Kernel.GetLength(1);
+            set
             {
                 Kernel = new double[KernelHeight, value];
-                NotifyPropertyChanged(nameof(KernelWidth));
             }
         }
         public int KernelHeight
         {
-            get => Kernel.GetLength(0); set
+            get => Kernel.GetLength(0);
+            set
             {
                 Kernel = new double[value, KernelWidth];
-                NotifyPropertyChanged(nameof(KernelHeight));
             }
         }
         public double Divisor { get; set; } = 1;
         public double Offset { get; set; } = 0;
         public Point Anchor { get; set; } = new Point(1, 1);
-        public event PropertyChangedEventHandler? PropertyChanged;
-        private void NotifyPropertyChanged(string propertyName)
+        public double AnchorX
         {
-            if (PropertyChanged != null)
+            get => Anchor.X;
+            set
             {
-                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+                Anchor = new Point(value, Anchor.Y);
             }
+        }
+        public double AnchorY
+        {
+            get => Anchor.Y;
+            set
+            {
+                Anchor = new Point(Anchor.X, value);
+            }
+        }
+        public override string ToString()
+        {
+            return $"Kernel: {KernelWidth}x{KernelHeight}, Divisor: {Divisor}, Offset: {Offset}, Anchor: {Anchor}\n{printKernel()}";
+        }
+        private string printKernel()
+        {
+            StringBuilder sb = new();
+            for (int i = 0; i < KernelHeight; i++)
+            {
+                for (int j = 0; j < KernelWidth; j++)
+                {
+                    sb.Append(Kernel[i, j]);
+                    if(j < KernelWidth - 1)
+                    {
+                        sb.Append(", ");
+                    }
+                }
+                sb.Append("\n");
+            }
+            return sb.ToString();
+        }
+
+        public ConvolutionFilter Clone()
+        {
+            return new ConvolutionFilter
+            {
+                Divisor = this.Divisor,
+                Offset = this.Offset,
+                Anchor = new Point(this.Anchor.X, this.Anchor.Y),
+                Kernel = (double[,])this.Kernel.Clone() // Deep copy of the 2D array
+            };
         }
     }
 
