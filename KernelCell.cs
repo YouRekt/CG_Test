@@ -19,15 +19,25 @@ public class KernelCell : INotifyPropertyChanged
             }
         }
     }
-
+    private bool _isAnchor;
+    public bool IsAnchor
+    {
+        get => _isAnchor;
+        set
+        {
+            _isAnchor = value;
+            OnPropertyChanged(nameof(IsAnchor));
+        }
+    }
     public int Row { get; }
     public int Column { get; }
 
-    public KernelCell(int row, int col, double value)
+    public KernelCell(int row, int col, double value, bool isAnchor)
     {
         Row = row;
         Column = col;
         _value = value;
+        IsAnchor = isAnchor;
     }
 
     public event PropertyChangedEventHandler? PropertyChanged;

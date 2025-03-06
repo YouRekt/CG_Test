@@ -27,10 +27,31 @@ namespace CG_Test
             DialogResult = false;
             Close();
         }
-
         private void Reset_Click(object sender, RoutedEventArgs e)
         {
             viewModel.ResetFilter();
+        }
+        private void SaveFilter_Click(object sender, RoutedEventArgs e)
+        {
+            viewModel.SaveFilter();
+        }
+        private void LoadFilterMenuItem_Click(object sender, RoutedEventArgs e)
+        {
+            if (sender is MenuItem menuItem && menuItem.Header is string filterName)
+            {
+                if (DataContext is ConvolutionFilterEditorViewModel viewModel)
+                {
+                    viewModel.LoadFilter(filterName);
+                }
+            }
+        }
+        private void OnAnchorChanged(object sender, RoutedEventArgs e)
+        {
+            int row, col;
+            if (int.TryParse(AnchorX.Text, out col) && int.TryParse(AnchorY.Text, out row))
+            {
+                viewModel.UpdateAnchor(row, col);
+            }
         }
     }
 }

@@ -1,0 +1,72 @@
+﻿[
+  {
+    "Name": "Blur",
+    "Kernel": [
+      [ 1, 1, 1 ],
+      [ 1, 1, 1 ],
+      [ 1, 1, 1 ]
+    ],
+    "Divisor": 9,
+    "Offset": 0,
+    "Anchor": {
+      "X": 1,
+      "Y": 1
+    }
+  },
+  {
+    "Name": "GaussianBlur",
+    "Kernel": [
+      [ 0, 1, 0 ],
+      [ 1, 4, 1 ],
+      [ 0, 1, 0 ]
+    ],
+    "Divisor": 8,
+    "Offset": 0,
+    "Anchor": {
+      "X": 1,
+      "Y": 1
+    }
+  },
+  {
+    "Name": "Sharpen",
+    "Kernel": [
+      [ 0, -1, 0 ],
+      [ -1, 5, -1 ],
+      [ 0, -1, 0 ]
+    ],
+    "Divisor": 1,
+    "Offset": 0,
+    "Anchor": {
+      "X": 1,
+      "Y": 1
+    }
+  },
+  {
+    "Name": "EdgeDetection",
+    "Kernel": [
+      [ -1, -1, -1 ],
+      [ -1, 8, -1 ],
+      [ -1, -1, -1 ]
+    ],
+    "Divisor": 1,
+    "Offset": 0,
+    "Anchor": {
+      "X": 1,
+      "Y": 1
+    }
+  },
+  {
+    "Name": "Emboss",
+    "Kernel": [
+      [ -1, -1, 0 ],
+      [ -1, 1, 1 ],
+      [ 0, 1, 1 ]
+    ],
+    "Divisor": 1,
+    "Offset": 0,
+    "Anchor": {
+      "X": 1,
+      "Y": 1
+    }
+  }
+]

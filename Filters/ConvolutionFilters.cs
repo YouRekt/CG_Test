@@ -1,20 +1,52 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.Security.RightsManagement;
+﻿using System.Runtime.InteropServices;
 using System.Text;
-using System.Threading.Tasks;
+using System.Text.Json.Serialization;
 using System.Windows;
-using System.Windows.Media;
-using System.Windows.Media.Effects;
 using System.Windows.Media.Imaging;
 
 namespace CG_Test.Filters
 {
     public class ConvolutionFilter
     {
+        [JsonIgnore] // Prevent direct serialization of 2D array
         public double[,] Kernel { get; set; } = new double[,] { { 0, 0, 0 }, { 0, 1, 0 }, { 0, 0, 0 } };
+        // Convert 2D array to jagged for serialization
+        [JsonPropertyName("Kernel")]
+        public double[][] KernelSerializable
+        {
+            get => ConvertToJagged(Kernel);
+            set => Kernel = ConvertTo2D(value);
+        }
+        private static double[][] ConvertToJagged(double[,] array)
+        {
+            int rows = array.GetLength(0);
+            int cols = array.GetLength(1);
+            double[][] jaggedArray = new double[rows][];
+            for (int i = 0; i < rows; i++)
+            {
+                jaggedArray[i] = new double[cols];
+                for (int j = 0; j < cols; j++)
+                {
+                    jaggedArray[i][j] = array[i, j];
+                }
+            }
+            return jaggedArray;
+        }
+
+        private static double[,] ConvertTo2D(double[][] jaggedArray)
+        {
+            int rows = jaggedArray.Length;
+            int cols = jaggedArray[0].Length;
+            double[,] array = new double[rows, cols];
+            for (int i = 0; i < rows; i++)
+            {
+                for (int j = 0; j < cols; j++)
+                {
+                    array[i, j] = jaggedArray[i][j];
+                }
+            }
+            return array;
+        }
         public int KernelWidth
         {
             get => Kernel.GetLength(1);

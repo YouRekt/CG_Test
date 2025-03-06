@@ -8,74 +8,107 @@
         Title="ConvolutionFilterEditor" Height="600" Width="800">
     <Window.Resources>
         <local:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
+        <local:BoolToBackgroundConverter x:Key="BoolToBackgroundConverter" />
     </Window.Resources>
-    <StackPanel>
-        <Menu Height="Auto">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Menu Grid.Row="0">
             <MenuItem x:Name="Reset" Header="Reset" Click="Reset_Click" />
+            <MenuItem Header="Filters" ItemsSource="{Binding AvailableFilters}">
+                <MenuItem.ItemContainerStyle>
+                    <Style TargetType="MenuItem">
+                        <Setter Property="Header" Value="{Binding}"/>
+                        <EventSetter Event="Click" Handler="LoadFilterMenuItem_Click"/>
+                    </Style>
+                </MenuItem.ItemContainerStyle>
+            </MenuItem>
         </Menu>
-        <Grid Margin="10">
+        <Grid Margin="10" Grid.Row="1">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="Auto"/>
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
 
             <!-- Kernel Size -->
-            <StackPanel Grid.Row="0" Orientation="Horizontal">
-                <TextBlock Text="Kernel Size:" VerticalAlignment="Center" Margin="0,0,5,0"/>
-                <ComboBox x:Name="KernelWidthCombo" Width="60" ItemsSource="{Binding KernelSizes}" SelectedItem="{Binding SelectedKernelWidth, Mode=TwoWay}"/>
-                <TextBlock Text="x" Margin="5,0,5,0" VerticalAlignment="Center"/>
-                <ComboBox x:Name="KernelHeightCombo" Width="60" ItemsSource="{Binding KernelSizes}" SelectedItem="{Binding SelectedKernelHeight, Mode=TwoWay}"/>
-            </StackPanel>
+            <Grid Grid.Row="0" Margin="0,0,0,10">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock Text="Kernel Name:" VerticalAlignment="Center" Margin="0,0,5,0" Grid.Column="0"/>
+                <TextBox x:Name="KernelName" Text="{Binding SelectedFilter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="200" Grid.Column="1"/>
+            </Grid>
+            <Grid Grid.Row="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock Text="Kernel Size:" VerticalAlignment="Center" Margin="0,0,5,0" Grid.Column="0"/>
+                <ComboBox x:Name="KernelWidthCombo" Width="60" ItemsSource="{Binding KernelSizes}" SelectedItem="{Binding SelectedKernelWidth, Mode=TwoWay}" Grid.Column="1"/>
+                <TextBlock Text="x" Margin="5,0,5,0" VerticalAlignment="Center" Grid.Column="2"/>
+                <ComboBox x:Name="KernelHeightCombo" Width="60" ItemsSource="{Binding KernelSizes}" SelectedItem="{Binding SelectedKernelHeight, Mode=TwoWay}" Grid.Column="3"/>
+            </Grid>
 
             <!-- Kernel Grid -->
-            <ItemsControl Grid.Row="1" x:Name="KernelGrid" Margin="0,10,0,0" ItemsSource="{Binding KernelGrid}">
+            <ItemsControl Grid.Row="2" x:Name="KernelGrid" Margin="0,10,0,0" ItemsSource="{Binding KernelGrid}">
                 <ItemsControl.ItemsPanel>
                     <ItemsPanelTemplate>
-                        <UniformGrid Columns="{Binding SelectedKernelWidth}" Rows="{Binding SelectedKernelHeight}" />
+                        <UniformGrid Columns="{Binding SelectedKernelWidth, UpdateSourceTrigger=PropertyChanged}" Rows="{Binding SelectedKernelHeight, UpdateSourceTrigger=PropertyChanged}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
                     </ItemsPanelTemplate>
                 </ItemsControl.ItemsPanel>
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
-                        <TextBox Text="{Binding Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnExceptions=True}" Width="80" Margin="2"/>
+                        <TextBox Text="{Binding Value, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, ValidatesOnDataErrors=True, ValidatesOnExceptions=True}" Background="{Binding IsAnchor,Mode=OneWay, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource BoolToBackgroundConverter}}" Width="80" Height="30" Margin="2"/>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
 
             <!-- Divisor, Offset, Anchor -->
-            <StackPanel Grid.Row="2" Margin="0,10,0,0">
+            <Grid Grid.Row="3" Margin="0,10,0,0" >
                 <!-- Divisor Input -->
-                <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
-                    <TextBlock Text="Divisor:" VerticalAlignment="Center" Margin="0,0,5,0"/>
-                    <!-- Bind the TextBox to CustomFilter.Divisor; disable it if auto-calc is on -->
-                    <TextBox Text="{Binding CustomFilter.Divisor, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="100" Visibility="{Binding IsDivisorEnabled, Converter={StaticResource BoolToVisibilityConverter}}" />
-                    <!-- Checkbox to toggle auto calculation -->
-                    <CheckBox Content="Auto Calculate" IsChecked="{Binding AutoCalculateDivisor, Mode=TwoWay}" VerticalAlignment="Center" Margin="10,0,0,0" />
-                </StackPanel>
-
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <TextBlock Text="Divisor:" VerticalAlignment="Center" Margin="0,0,5,0" Grid.Row="0" Grid.Column="0"/>
+                <!-- Bind the TextBox to CustomFilter.Divisor; disable it if auto-calc is on -->
+                <TextBox Text="{Binding CustomFilter.Divisor, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="100" Visibility="{Binding IsDivisorEnabled, Converter={StaticResource BoolToVisibilityConverter}}" Grid.Row="0" Grid.Column="1"/>
+                <!-- Checkbox to toggle auto calculation -->
+                <CheckBox Content="Auto Calculate" IsChecked="{Binding AutoCalculateDivisor, Mode=TwoWay}" VerticalAlignment="Center" Margin="10,0,0,0" Grid.Row="0" Grid.Column="3"/>
                 <!-- Offset Input -->
-                <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
-                    <TextBlock Text="Offset:" VerticalAlignment="Center" Margin="0,0,5,0"/>
-                    <TextBox Text="{Binding CustomFilter.Offset, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="100"/>
-                </StackPanel>
-
+                <TextBlock Text="Offset:" VerticalAlignment="Center" Margin="0,0,5,0" Grid.Row="1" Grid.Column="0"/>
+                <TextBox Text="{Binding CustomFilter.Offset, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="100" Grid.Row="1" Grid.Column="1"/>
                 <!-- Anchor Input: X and Y Coordinates -->
-                <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
-                    <TextBlock Text="Anchor X:" VerticalAlignment="Center" Margin="0,0,5,0"/>
-                    <TextBox Text="{Binding CustomFilter.AnchorX, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="100" />
-                </StackPanel>
-                <StackPanel Orientation="Horizontal" Margin="0,0,0,5">
-                    <TextBlock Text="Anchor Y:" VerticalAlignment="Center" Margin="0,0,5,0"/>
-                    <TextBox Text="{Binding CustomFilter.AnchorY, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="100" />
-                </StackPanel>
-            </StackPanel>
-
+                <TextBlock Text="Anchor X:" VerticalAlignment="Center" Margin="0,0,5,0" Grid.Row="2" Grid.Column="0"/>
+                <TextBox x:Name="AnchorX" Text="{Binding CustomFilter.AnchorX, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="100" Grid.Row="2" Grid.Column="1" TextChanged="OnAnchorChanged"/>
+                <TextBlock  Text="Anchor Y:" VerticalAlignment="Center" Margin="0,0,5,0" Grid.Row="3" Grid.Column="0"/>
+                <TextBox x:Name="AnchorY" Text="{Binding CustomFilter.AnchorY, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="100" Grid.Row="3" Grid.Column="1" TextChanged="OnAnchorChanged"/>
+            </Grid>
             <!-- Buttons -->
-            <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Right" Margin="0,10,0,0">
-                <Button Content="Cancel" Click="Cancel_Click" Margin="0,0,10,0"/>
-                <Button Content="Apply" Click="Apply_Click"/>
-            </StackPanel>
+            <Grid Grid.Row="4" Margin="0,10,0,0">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+                <Button Content="Save Filter" Click="SaveFilter_Click" Margin="0,0,10,0" Grid.Column="0" HorizontalAlignment="Center"/>
+                <Button Content="Cancel" Click="Cancel_Click" Margin="0,0,10,0" Grid.Column="1" HorizontalAlignment="Center"/>
+                <Button Content="Apply" Click="Apply_Click" Grid.Column="2" HorizontalAlignment="Center"/>
+            </Grid>
         </Grid>
-    </StackPanel>
+    </Grid>
 </Window>
