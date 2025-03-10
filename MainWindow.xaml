@@ -6,8 +6,9 @@
         xmlns:local="clr-namespace:CG_Test"
         mc:Ignorable="d"
         Title="Image Filtering App" Height="600" Width="800">
-    <StackPanel>
-        <Menu Height="Auto">
+
+    <DockPanel>
+        <Menu DockPanel.Dock="Top">
             <MenuItem Header="File">
                 <MenuItem x:Name="LoadImage" Header="Load Image" Click="LoadImage_Click"/>
                 <MenuItem x:Name="Save" Header="Save" Click="Save_Click"/>
@@ -19,14 +20,20 @@
                     <MenuItem x:Name="EditCustomFilter" Header="Edit Custom Filter" Click="EditCustomFilter_Click"/>
                 </MenuItem>
             </MenuItem>
+            <MenuItem x:Name="Morphological_Filters" Header="Morphological Filters"/>
         </Menu>
         <Grid>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
-            <Image Grid.Column="0" x:Name="OriginalImage" Stretch="Uniform"/>
-            <Image Grid.Column="1" x:Name="FilteredImage" Stretch="Uniform"/>
+
+            <ScrollViewer Grid.Column="0" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+                <Image x:Name="OriginalImage" Stretch="None" />
+            </ScrollViewer>
+            <ScrollViewer Grid.Column="1" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto">
+                <Image x:Name="FilteredImage" Stretch="None" />
+            </ScrollViewer>
         </Grid>
-    </StackPanel>
+    </DockPanel>
 </Window>

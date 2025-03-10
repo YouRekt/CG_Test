@@ -8,9 +8,8 @@ namespace CG_Test.Filters
 {
     public class ConvolutionFilter
     {
-        [JsonIgnore] // Prevent direct serialization of 2D array
+        [JsonIgnore]
         public double[,] Kernel { get; set; } = new double[,] { { 0, 0, 0 }, { 0, 1, 0 }, { 0, 0, 0 } };
-        // Convert 2D array to jagged for serialization
         [JsonPropertyName("Kernel")]
         public double[][] KernelSerializable
         {
@@ -111,7 +110,7 @@ namespace CG_Test.Filters
                 Divisor = this.Divisor,
                 Offset = this.Offset,
                 Anchor = new Point(this.Anchor.X, this.Anchor.Y),
-                Kernel = (double[,])this.Kernel.Clone() // Deep copy of the 2D array
+                Kernel = (double[,])this.Kernel.Clone()
             };
         }
     }
@@ -140,7 +139,6 @@ namespace CG_Test.Filters
                     {
                         double[] sum = new double[3] { 0, 0, 0 }; // B, G, R
 
-                        // Apply kernel to surrounding pixels
                         for (int ky = 0; ky < kernelHeight; ky++)
                         {
                             for (int kx = 0; kx < kernelWidth; kx++)
@@ -160,8 +158,6 @@ namespace CG_Test.Filters
                                 sum[2] += originalPixels[index + 2] * weight; // R
                             }
                         }
-
-                        // Apply divisor and offset, then clamp to [0, 255]
                         int outputIndex = y * stride + x * 4;
                         for (int c = 0; c < 3; c++)
                         {

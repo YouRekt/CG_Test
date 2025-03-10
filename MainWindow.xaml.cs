@@ -9,9 +9,6 @@ using System.Windows.Media.Imaging;
 
 namespace CG_Test;
 
-/// <summary>
-/// Interaction logic for MainWindow.xaml
-/// </summary>
 public partial class MainWindow : Window
 {
     private BitmapSource? filteredImage;
@@ -33,6 +30,12 @@ public partial class MainWindow : Window
         Edge_Detection,
         Emboss,
         Custom_Filter
+    }
+
+    private enum MorphologicalFilterType
+    {
+        Erosion,
+        Dilation
     }
     public MainWindow()
     {
@@ -69,6 +72,18 @@ public partial class MainWindow : Window
             filter.Click += FilterMenuItem_Click;
             Convolution_Filters.Items.Add(filter);
         }
+
+        foreach (MorphologicalFilterType filterType in Enum.GetValues(typeof(MorphologicalFilterType)))
+        {
+            MenuItem filter = new MenuItem
+            {
+                Header = string.Join(" ", filterType.ToString().Split("_")),
+                Tag = filterType,
+            };
+
+            filter.Click += FilterMenuItem_Click;
+            Morphological_Filters.Items.Add(filter);
+        }
     }
 
     private void FilterMenuItem_Click(object sender, RoutedEventArgs e)
@@ -79,6 +94,8 @@ public partial class MainWindow : Window
                 ApplyFunctionalFilter(functionalFilterType);
             else if (filter.Tag is ConvolutionFilterType convolutionFilterType)
                 ApplyConvolutionFilter(convolutionFilterType, customConvolutionFilter);
+            else if (filter.Tag is MorphologicalFilterType morphologicalFilterType)
+                ApplyMorphologicalFilter(morphologicalFilterType);
         }
     }
 
@@ -160,11 +177,41 @@ public partial class MainWindow : Window
                         filteredImage = ConvolutionFilters.Emboss(filteredImage);
                         break;
                     case ConvolutionFilterType.Custom_Filter:
-                        if(custom == null)
+                        if (custom == null)
                         {
                             throw new ArgumentNullException("Please provide a custom filter");
                         }
                         filteredImage = ConvolutionFilters.Convolve(filteredImage, custom);
+                        break;
+                    default:
+                        break;
+                }
+                FilteredImage.Source = filteredImage;
+            }
+            else
+            {
+                MessageBox.Show("No image loaded. Please load an image first.");
+            }
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show($"Error applying filter: {ex.Message}");
+        }
+    }
+
+    private void ApplyMorphologicalFilter(MorphologicalFilterType filterType)
+    {
+        try
+        {
+            if (filteredImage != null)
+            {
+                switch (filterType)
+                {
+                    case MorphologicalFilterType.Dilation:
+                        filteredImage = MorphologicalFilters.Dilate(filteredImage);
+                        break;
+                    case MorphologicalFilterType.Erosion:
+                        filteredImage = MorphologicalFilters.Erode(filteredImage);
                         break;
                     default:
                         break;

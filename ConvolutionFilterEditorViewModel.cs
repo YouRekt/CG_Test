@@ -11,7 +11,7 @@ namespace CG_Test
     public class FilterData
     {
         public string Name { get; set; }
-        [JsonIgnore] // Prevents direct serialization of 2D array
+        [JsonIgnore]
         public double[,] Kernel { get; set; }
         [JsonPropertyName("Kernel")]
         public double[][] KernelSerializable

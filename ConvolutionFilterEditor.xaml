@@ -73,7 +73,6 @@
 
             <!-- Divisor, Offset, Anchor -->
             <Grid Grid.Row="3" Margin="0,10,0,0" >
-                <!-- Divisor Input -->
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="Auto"/>
@@ -84,15 +83,15 @@
                     <ColumnDefinition Width="Auto"/>
                     <ColumnDefinition Width="*"/>
                 </Grid.ColumnDefinitions>
+                <!-- Divisor Input -->
                 <TextBlock Text="Divisor:" VerticalAlignment="Center" Margin="0,0,5,0" Grid.Row="0" Grid.Column="0"/>
-                <!-- Bind the TextBox to CustomFilter.Divisor; disable it if auto-calc is on -->
                 <TextBox Text="{Binding CustomFilter.Divisor, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="100" Visibility="{Binding IsDivisorEnabled, Converter={StaticResource BoolToVisibilityConverter}}" Grid.Row="0" Grid.Column="1"/>
-                <!-- Checkbox to toggle auto calculation -->
+                <!-- Auto Divisor Checkbox -->
                 <CheckBox Content="Auto Calculate" IsChecked="{Binding AutoCalculateDivisor, Mode=TwoWay}" VerticalAlignment="Center" Margin="10,0,0,0" Grid.Row="0" Grid.Column="3"/>
                 <!-- Offset Input -->
                 <TextBlock Text="Offset:" VerticalAlignment="Center" Margin="0,0,5,0" Grid.Row="1" Grid.Column="0"/>
                 <TextBox Text="{Binding CustomFilter.Offset, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="100" Grid.Row="1" Grid.Column="1"/>
-                <!-- Anchor Input: X and Y Coordinates -->
+                <!-- Anchor Input -->
                 <TextBlock Text="Anchor X:" VerticalAlignment="Center" Margin="0,0,5,0" Grid.Row="2" Grid.Column="0"/>
                 <TextBox x:Name="AnchorX" Text="{Binding CustomFilter.AnchorX, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Width="100" Grid.Row="2" Grid.Column="1" TextChanged="OnAnchorChanged"/>
                 <TextBlock  Text="Anchor Y:" VerticalAlignment="Center" Margin="0,0,5,0" Grid.Row="3" Grid.Column="0"/>
